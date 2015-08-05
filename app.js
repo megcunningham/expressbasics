@@ -3,9 +3,14 @@ var fs = require('fs');
 var express = require('express');
 var lessCSS = require('less-middleware');
 var morgan = require('morgan');
+var bodyParser = require('body-parser');
+
 
 var routes = require('./routes/index');
 var pizza = require('./routes/pizza');
+var nuggets = require('./routes/chickennuggets');
+var imgur = require('./routes/imgur');
+
 
 var app = express();
 
@@ -15,6 +20,8 @@ app.set('case sensitive routing', true);
 app.locals.title = 'aweso.me';
 
 app.use(lessCSS('public'));
+
+app.use(bodyParser.urlcoded({extended: false}))
 
 var logStream = fs.createWriteStream('access.log', {flags: 'a'});
 app.use(morgan('combined', {stream: logStream}));
@@ -37,6 +44,8 @@ app.use(express.static('public'));
 
 app.use('/', routes);
 app.use('/pizza', pizza);
+app.use('/chickennuggets', nuggets);
+app.use('/imgur', imgur)''
 
 app.use(function (req, res) {
   res.status(403).send('Unauthorized!');
